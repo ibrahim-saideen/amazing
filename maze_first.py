@@ -40,35 +40,35 @@ def down(a, b, h, w, maze):
          return False
     
 def creat_maze(h, w):
-    maze = np.ones((h*2+1, w*2+1))
+     maze = np.ones((h*2+1, w*2+1))
+     
+     a, b = ((h - 5) // 2), (w - 7) // 2
 
-    a, b = ((h - 5) // 2), (w - 7) // 2
+     a = a*2+1
+     b = b*2+1
+     pattern = [
+          [8,1,1,1,1,1,1,1,8,8,8,8,8],
+          [8,1,1,1,1,1,1,1,1,1,1,1,8],
+          [8,1,1,1,1,1,1,1,1,1,1,1,8],
+          [8,1,1,1,1,1,1,1,1,1,1,1,8],
+          [8,8,8,8,8,1,1,1,8,8,8,8,8],
+          [1,1,1,1,8,1,1,1,8,1,1,1,1],
+          [1,1,1,1,8,1,1,1,8,1,1,1,1],
+          [1,1,1,1,8,1,1,1,8,1,1,1,1],
+          [1,1,1,1,8,1,1,1,8,8,8,8,8],
+          ]
 
-    a = a*2+1
-    b = b*2+1
-    pattern = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,8,1,1,1,1,1,8,8,8,8,8,8],
-        [1,8,1,1,1,1,1,1,1,1,1,1,8],
-        [1,8,1,1,1,1,1,1,1,1,1,1,8],
-        [1,8,1,1,1,1,1,1,1,1,1,1,8],
-        [1,8,8,8,8,8,1,8,8,8,8,8,8],
-        [1,1,1,1,1,8,1,8,1,1,1,1,1],
-        [1,1,1,1,1,8,1,8,1,1,1,1,1],
-        [1,1,1,1,1,8,1,8,1,1,1,1,1],
-        [1,1,1,1,1,8,1,8,8,8,8,8,8]
-    ]
+     try:
+          maze[a: a+9, b:b+13] = pattern
+     except ValueError :
+          print('Error : cant generate maze smaller than hight = 5 and width = 7')
+          exit()
 
-    try:
-        maze[a: a+10, b:b+13] = pattern
-    except ValueError :
-         print('Error : cant generate maze smaller than hight = 5 and width = 7')
-
-
-    x, y = (1, 1)
-    maze[x, y] = 0
-    stack = [(x, y)]
-    while(stack):
+     
+     x, y = (1, 1)
+     maze[x, y] = 0
+     stack = [(x, y)]
+     while(stack):
         a, b = stack[-1]
         directions = [left, right, up, down]
         random.shuffle(directions)
@@ -82,12 +82,20 @@ def creat_maze(h, w):
         if flage:
             stack.pop()
              
-    return maze
+     return maze
+
+
+#print(creat_maze(10,11))
+
+#mazee = creat_maze(10,10)
+
+
 
 
 plt.figure(figsize=(50, 50))
-plt.imshow(creat_maze(5, 7), cmap="binary")  # 'binary' turns 0 to white and 1 to black
+plt.imshow(creat_maze(50, 50), cmap="binary")  # 'binary' turns 0 to white and 1 to black
 plt.xticks([])  # Remove x-axis tick marks
 plt.yticks([])  # Remove y-axis tick marks
 plt.title("Maze Visualization")
 plt.savefig('MaenIbrahim.PNG')
+
