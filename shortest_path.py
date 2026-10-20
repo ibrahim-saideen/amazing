@@ -45,7 +45,8 @@ def shortest_path(start, end, maze):
      dq = deque()
      dq.append((x1, y1))
 
-     parents = {(x1, y2) : None}
+     parents = {}
+     parents[(x1, y1)] = None
      directions = [up, right, down, left]
      viseted_cells = []
 
@@ -66,16 +67,16 @@ def shortest_path(start, end, maze):
 
 maze = creat_maze(10,20)
 
-parents = (shortest_path((0,0),(8,8),maze))
+parents = (shortest_path((0,0),(9,15),maze))
 
 path = []
-current = (17,17)
+current = (19,31)
 
 while current is not None:
     path.append(current)
     current = parents[current]
 
-path.reverse()
+path.reverse() 
 
 for item in path:
      x, y = item
