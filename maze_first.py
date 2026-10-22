@@ -1,6 +1,5 @@
 import numpy as np
 import random
-import matplotlib.pyplot as plt
 
 def left(a, b, maze):
 
@@ -86,17 +85,3 @@ def creat_maze(h, w):
              
      return maze
 
-
-#print(creat_maze(10,11))
-
-#mazee = creat_maze(15, 15)
-
-
-'''
-plt.figure(figsize=(50, 50))
-plt.imshow(creat_maze(50, 50), cmap="binary")  # 'binary' turns 0 to white and 1 to black
-plt.xticks([])  # Remove x-axis tick marks
-plt.yticks([])  # Remove y-axis tick marks
-plt.title("Maze Visualization")
-plt.savefig('MaenIbrahim.PNG')
-'''

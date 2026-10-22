@@ -1,31 +1,32 @@
 from maze_first import creat_maze
 from collections import deque
-import matplotlib.pyplot as plt
 
-def left(a, b, h, w, maze):
+def left(a, b, maze):
 
     if b-2 > 0 and maze[a][b-2] == 0 and maze[a][b-1] == 0:
          return((a, b-2))
     else:
          return False
 
-def right(a, b, h, w, maze):
+def right(a, b, maze):
 
+    w = (len(maze[0]) - 1) / 2 
     if  b+2 < w*2 and maze[a][b+2] == 0 and maze[a][b+1] == 0:
          return((a, b+2))
     else:
          return False
 
 
-def up(a, b, h, w, maze):
+def up(a, b, maze):
 
     if  a-2 > 0 and maze[a-2][b] == 0 and maze[a-1][b] == 0:
          return((a-2, b))
     else:
          return False
 
-def down(a, b, h, w, maze):
-    
+def down(a, b, maze):
+
+    h = (len(maze) - 1) / 2 
     if  a+2 < h*2 and maze[a+2][b] == 0 and maze[a+1][b] == 0:
          return((a+2, b))
     else:
@@ -54,7 +55,7 @@ def shortest_path(start, end, maze):
           x, y = dq.popleft()
           viseted_cells.append((x,y))
           for dir in directions:
-               next_cell = dir(x, y, 10, 20, maze)
+               next_cell = dir(x, y, maze)
                if next_cell and next_cell not in viseted_cells:
                     parents[next_cell] = (x, y)
                     dq.append(next_cell)
@@ -95,14 +96,5 @@ for row in maze:
                  print("⬜",end="")
         print()
 
-
-'''
-plt.figure(figsize=(50, 50))
-plt.imshow(maze, cmap="binary")  # 'binary' turns 0 to white and 1 to black
-plt.xticks([])  # Remove x-axis tick marks
-plt.yticks([])  # Remove y-axis tick marks
-plt.title("Maze Visualization")
-plt.savefig('MaenIbrahim.PNG')
-'''          
 
       
