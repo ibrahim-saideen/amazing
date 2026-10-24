@@ -84,4 +84,3 @@ def creat_maze(h, w):
             stack.pop()
              
      return maze
-

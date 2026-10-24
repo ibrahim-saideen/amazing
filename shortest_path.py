@@ -1,5 +1,12 @@
 from maze_first import creat_maze
 from collections import deque
+from read_config import dic, main
+
+def grid_point(maze_point):
+     x ,y = maze_point
+     x = x*2 + 1
+     y = y*2 + 1
+     return((x, y))
 
 def left(a, b, maze):
 
@@ -66,12 +73,21 @@ def shortest_path(start, end, maze):
                break
      return(parents)
 
-maze = creat_maze(10,20)
+#############################################################################################
 
-parents = (shortest_path((0,0),(9,15),maze))
+main()
+
+height = dic['height']
+width = dic['width']
+start = dic['entry']
+end = dic['exit']
+
+maze = creat_maze(height ,width)
+
+parents = (shortest_path(start, end, maze))
 
 path = []
-current = (19,31)
+current = grid_point(end)
 
 while current is not None:
     path.append(current)
