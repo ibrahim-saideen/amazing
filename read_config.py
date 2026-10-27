@@ -13,7 +13,6 @@ class Data(BaseModel):
     output_file: str
     perfect: bool = False
 
-
     @model_validator(mode='after')
     def check_output(self) -> Self:
         """
@@ -29,40 +28,43 @@ class Data(BaseModel):
     def check_entry(self) -> Self:
 
         if self.entry.count(',') != 1:
-            raise ValueError('Error, Not a valid entry point : (int, int) accepted only !')
+            raise ValueError(
+                'Error, Not a valid entry point : (int, int) accepted only !')
         lst_entry = self.entry.split(',')
 
         if not (lst_entry[0].isnumeric() or lst_entry[1].isnumeric()):
-            raise ValueError("Error, Invalid tuple values ; should be of type 'int' ")
+            raise ValueError(
+                "Error, Invalid tuple values ; should be of type 'int' ")
 
         if (int(lst_entry[0]) > self.height - 1) or (int(lst_entry[1]) > self.width - 1):
             raise ValueError('Error, Out of range !')
 
         return self
 
-
     @model_validator(mode='after')
     def check_exit(self) -> Self:
 
         if self.exit.count(',') != 1:
             raise ValueError('Error, Not a valid entry point')
-        lst_exit= self.exit.split(',')
+        lst_exit = self.exit.split(',')
 
-        if not(lst_exit[0].isnumeric() and lst_exit[1].isnumeric()):
-            raise ValueError('Error, Not a valid entry point : (int, int) accepted only !')
+        if not (lst_exit[0].isnumeric() and lst_exit[1].isnumeric()):
+            raise ValueError(
+                'Error, Not a valid entry point : (int, int) accepted only !')
 
         if (int(lst_exit[0]) > self.height - 1) or (int(lst_exit[1]) > self.width - 1):
             raise ValueError('Error, Out of range !')
 
         return self
 
+
 dic = {
-        'width': 0,
-        'height': 0,
-        'entry': None,
-        'exit': None,
-        'output_file': None,
-        'perfect': False
+    'width': 0,
+    'height': 0,
+    'entry': None,
+    'exit': None,
+    'output_file': None,
+    'perfect': False
 }
 
 
@@ -72,7 +74,6 @@ def main() -> None:
         print('Error: NO config file given')
         exit()
 
-
     try:
         with open(sys.argv[1]) as file:
             lines = file.readlines()
@@ -80,13 +81,12 @@ def main() -> None:
         print(f"Error: Could not read file '{sys.argv[1]}'")
         exit()
 
-
     exit_falg = 0
     for line in lines:
         line = line.strip()
         if not line or line.startswith('#'):  # Skip empty lines or comments
             continue
-            
+
         if '=' not in line:
             continue
 
@@ -94,7 +94,7 @@ def main() -> None:
             key, val = line.split('=', 1)
             key = key.strip().lower()
             val = val.strip()
-            
+
             if key not in dic:
                 raise ValueError(f"Key '{key}' is not a valid key")
             dic[key] = val
@@ -104,7 +104,6 @@ def main() -> None:
 
     if exit_falg:
         exit()
-
 
     try:
         valid_data = Data(
@@ -116,7 +115,6 @@ def main() -> None:
             output_file=dic['output_file'],
             perfect=dic['perfect']
         )
-
 
     except ValueError as e:
         print(e.errors()[0]['msg'])
@@ -149,6 +147,6 @@ def main() -> None:
         print(e)
 '''
 
-    
+
 if __name__ == "__main__":
     main()
