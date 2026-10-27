@@ -109,8 +109,6 @@ for row in maze:
             elif cell == 8:
                  print("🟩", end="")
             else:
-                 print("⬜",end="")
+                 print("⬤",end=" ")
         print()
 
-
-      
