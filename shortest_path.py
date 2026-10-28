@@ -1,7 +1,4 @@
-from maze_first import creat_maze
 from collections import deque
-from read_config import dic, main
-
 
 def grid_point(maze_point):
     x, y = maze_point
@@ -76,42 +73,3 @@ def shortest_path(start, end, maze):
         if next_cell == end:
             break
     return (parents)
-
-
-if __name__ == "__main__":
-    main()
-
-height = dic['height']
-width = dic['width']
-start = dic['entry']
-end = dic['exit']
-
-maze = creat_maze(height, width)
-
-parents = (shortest_path(start, end, maze))
-
-path = []
-current = grid_point(end)
-
-while current is not None:
-    path.append(current)
-    current = parents[current]
-
-path.reverse()
-
-for item in path:
-    x, y = item
-    maze[x, y] = 9
-
-
-for row in maze:
-    for cell in row:
-        if cell == 0:
-            print(" ", end=" ")
-        elif cell == 1:
-            print("🧱", end="")
-        elif cell == 8:
-            print("🟩", end="")
-        else:
-            print("⬤", end=" ")
-    print()
