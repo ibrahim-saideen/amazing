@@ -84,7 +84,7 @@ def main() -> None:
     exit_falg = 0
     for line in lines:
         line = line.strip()
-        if not line or line.startswith('#'):  # Skip empty lines or comments
+        if not line or line.startswith('#'):
             continue
 
         if '=' not in line:
