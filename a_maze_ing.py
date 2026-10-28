@@ -11,6 +11,15 @@ end = dic['exit']
 
 maze = creat_maze(height, width)
 
+a, b = grid_point(start)
+c, d = grid_point(end)
+
+if maze[a][b] == 8 or maze[c][d] == 8:
+    print('chose a valid point')
+    exit() 
+
+
+
 parents = (shortest_path(start, end, maze))
 
 path = []
