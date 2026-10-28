@@ -62,7 +62,6 @@ def shortest_path(start, end, maze):
     directions = [up, right, down, left]
     viseted_cells = []
 
-<<<<<<< HEAD
     while (dq):
         x, y = dq.popleft()
         viseted_cells.append((x, y))
@@ -77,8 +76,6 @@ def shortest_path(start, end, maze):
         if next_cell == end:
             break
     return (parents)
-
-#############################################################################################
 
 
 if __name__ == "__main__":
@@ -118,22 +115,3 @@ for row in maze:
         else:
             print("⬤", end=" ")
     print()
-=======
-     while(dq):
-          x, y = dq.popleft()
-          viseted_cells.append((x,y))
-          for dir in directions:
-               next_cell = dir(x, y, maze)
-               if next_cell and next_cell not in viseted_cells:
-                    parents[next_cell] = (x, y)
-                    dq.append(next_cell)
-                    viseted_cells.append(next_cell)
-                    if next_cell == end:
-                         break
-          if next_cell == end:
-               break
-
-     return(parents)
-
-#############################################################################################
->>>>>>> 77d98d979fb923a4b61004d0010704f746516236

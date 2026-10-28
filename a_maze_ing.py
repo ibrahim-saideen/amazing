@@ -48,6 +48,3 @@ for row in maze:
             else:
                  print("⬜",end="")
         print()
-
-
-      
