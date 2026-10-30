@@ -1,8 +1,9 @@
 import numpy as np
 import random
+from numpy._typing import NDArray
 
 
-def left(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
+def left(row: int, col: int, gird: NDArray) -> tuple[int, int] | bool:
 
     if col-2 > 0 and gird[row][col-2] == 1 and gird[row][col-1] != 8:
         gird[row][col-2] = 0
@@ -12,7 +13,7 @@ def left(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
         return False
 
 
-def right(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
+def right(row: int, col: int, gird: NDArray) -> tuple[int, int] | bool:
 
     w = (len(gird[0]) - 1) / 2
     if col+2 < w*2 and gird[row][col+2] == 1 and gird[row][col+1] != 8:
@@ -23,7 +24,7 @@ def right(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
         return False
 
 
-def up(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
+def up(row: int, col: int, gird: NDArray) -> tuple[int, int] | bool:
 
     if row-2 > 0 and gird[row-2][col] == 1 and gird[row-1][col] != 8:
         gird[row-2][col] = 0
@@ -33,7 +34,7 @@ def up(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
         return False
 
 
-def down(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
+def down(row: int, col: int, gird: NDArray) -> tuple[int, int] | bool:
 
     h = (len(gird) - 1) / 2
     if row+2 < h*2 and gird[row+2][col] == 1 and gird[row+1][col] != 8:
@@ -44,7 +45,7 @@ def down(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
         return False
 
 
-def creat_maze(h, w):
+def creat_maze(h: int, w: int) -> NDArray:
     gird = np.ones((h*2+1, w*2+1))
 
     a, b = ((h - 5) // 2), (w - 7) // 2
@@ -68,7 +69,7 @@ def creat_maze(h, w):
         gird[a: a+9, b:b+13] = pattern
 
     except ValueError:
-        print('Error : cant generate gird smaller than hight = 5 and width = 7')
+        print('Error, cant generate gird smaller than hight = 5 and width = 7')
         exit()
 
     x, y = (1, 1)
@@ -81,8 +82,8 @@ def creat_maze(h, w):
         random.shuffle(directions)
         flag = 1
         for dir in directions:
-            result: tuple[int, int] = dir(a, b, gird)
-            if result:
+            result = dir(a, b, gird)
+            if result and isinstance(result, tuple):
                 flag = 0
                 stack.append(result)
                 break
