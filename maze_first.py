@@ -1,56 +1,53 @@
-import numpy as np
 import random
+import numpy as np
+from numpy._typing import NDArray
 
-
-def left(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
-
-    if col-2 > 0 and gird[row][col-2] == 1 and gird[row][col-1] != 8:
-        gird[row][col-2] = 0
-        gird[row][col-1] = 0
-        return ((row, col-2))
+def left(row: int, col: int, grid: NDArray) -> tuple[int, int] | bool:
+    if col - 2 > 0 and grid[row][col - 2] == 1 and grid[row][col - 1] != 8:
+        grid[row][col - 2] = 0
+        grid[row][col - 1] = 0
+        return (row, col - 2)
     else:
         return False
 
 
-def right(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
-
-    w = (len(gird[0]) - 1) / 2
-    if col+2 < w*2 and gird[row][col+2] == 1 and gird[row][col+1] != 8:
-        gird[row][col+2] = 0
-        gird[row][col+1] = 0
-        return ((row, col+2))
+def right(row: int, col: int, grid: NDArray) -> tuple[int, int] | bool:
+    w = (len(grid[0]) - 1) / 2
+    if col + 2 < w * 2 and grid[row][col + 2] == 1 and grid[row][col + 1] != 8:
+        grid[row][col + 2] = 0
+        grid[row][col + 1] = 0
+        return (row, col + 2)
     else:
         return False
 
 
-def up(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
-
-    if row-2 > 0 and gird[row-2][col] == 1 and gird[row-1][col] != 8:
-        gird[row-2][col] = 0
-        gird[row-1][col] = 0
-        return ((row-2, col))
+def up(row: int, col: int, grid: NDArray) -> tuple[int, int] | bool:
+    if row - 2 > 0 and grid[row - 2][col] == 1 and grid[row - 1][col] != 8:
+        grid[row - 2][col] = 0
+        grid[row - 1][col] = 0
+        return (row - 2, col)
     else:
         return False
 
 
-def down(row: int, col: int, gird: tuple) -> tuple[int, int] | bool:
-
-    h = (len(gird) - 1) / 2
-    if row+2 < h*2 and gird[row+2][col] == 1 and gird[row+1][col] != 8:
-        gird[row+2][col] = 0
-        gird[row+1][col] = 0
-        return ((row+2, col))
+def down(row: int, col: int, grid: NDArray) -> tuple[int, int] | bool:
+    h = (len(grid) - 1) / 2
+    if row + 2 < h * 2 and grid[row + 2][col] == 1 and grid[row + 1][col] != 8:
+        grid[row + 2][col] = 0
+        grid[row + 1][col] = 0
+        return (row + 2, col)
     else:
         return False
 
 
-def creat_maze(h, w):
-    gird = np.ones((h*2+1, w*2+1))
+def creat_maze(row: int, col: int) -> NDArray:
+    grid = np.ones((row * 2 + 1, col * 2 + 1))
 
-    a, b = ((h - 5) // 2), (w - 7) // 2
+    a, b = ((row - 5) // 2), (col - 7) // 2
 
-    a = a*2+1
-    b = b*2+1
+    # starting points of where the 42 pattern will be inserted
+    a = a * 2 + 1
+    b = b * 2 + 1
 
     pattern = [
         [8, 1, 1, 1, 1, 1, 1, 1, 8, 8, 8, 8, 8],
@@ -64,29 +61,24 @@ def creat_maze(h, w):
         [1, 1, 1, 1, 8, 1, 1, 1, 8, 8, 8, 8, 8],
     ]
 
-    try:
-        gird[a: a+9, b:b+13] = pattern
+    grid[a : a + 9, b : b + 13] = pattern
 
-    except ValueError:
-        print('Error : cant generate gird smaller than hight = 5 and width = 7')
-        exit()
+    y, x = (1, 1)
 
-    x, y = (1, 1)
-
-    gird[x, y] = 0
-    stack = [(x, y)]
-    while (stack):
+    grid[y, x] = 0
+    stack = [(y, x)]
+    while stack:
         a, b = stack[-1]
         directions = [left, right, up, down]
         random.shuffle(directions)
         flag = 1
         for dir in directions:
-            result: tuple[int, int] = dir(a, b, gird)
-            if result:
+            result = dir(a, b, grid)
+            if result and isinstance(result, tuple):
                 flag = 0
                 stack.append(result)
                 break
         if flag:
             stack.pop()
 
-    return gird
+    return grid

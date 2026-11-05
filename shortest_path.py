@@ -43,19 +43,14 @@ def down(a, b, maze):
 
 def shortest_path(start, end, maze):
 
-    x1, y1 = start
-    x2, y2 = end
-    x1 = x1*2+1
-    y1 = y1*2+1
-    x2 = x2*2+1
-    y2 = y2*2+1
-    end = (x2, y2)
+    start = grid_point(start)
+    end = grid_point(end)
 
     dq = deque()
-    dq.append((x1, y1))
+    dq.append(start)
 
     parents = {}
-    parents[(x1, y1)] = None
+    parents[start] = None
     directions = [up, right, down, left]
     viseted_cells = []
 
@@ -72,4 +67,12 @@ def shortest_path(start, end, maze):
                     break
         if next_cell == end:
             break
-    return (parents)
+    path = []
+    current = end
+
+    while current is not None:
+        path.append(current)
+        current = parents[current]
+
+    path.reverse()
+    return path
