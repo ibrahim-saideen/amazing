@@ -122,8 +122,8 @@ def create_non_perfect(row: int, col: int, loop_chance: float = 0.3) -> NDArray:
     while stack:
         cy, cx = stack[-1]
         random.shuffle(directions)
-        for move in directions:
-            result = move(cy, cx, grid)
+        for dir in directions:
+            result = dir (cy, cx, grid)
             if result is not None:
                 stack.append(result)
                 break
