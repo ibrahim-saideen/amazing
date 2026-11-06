@@ -69,15 +69,14 @@ def creat_maze(row: int, col: int) -> NDArray:
         [1, 1, 1, 1, 8, 1, 1, 1, 8, 8, 8, 8, 8],
     ]
 
-
     grid[a: a + 9, b: b + 13] = pattern
 
     y, x = (1, 1)
 
     grid[y, x] = 0
     stack = [(y, x)]
-    while stack: # not empty
-        cur_y, cur_x = stack[-1] # 1 1, select a random directions , apply one of it on the list
+    while stack:  # not empty
+        cur_y, cur_x = stack[-1]
         directions = [left, right, up, down]
         random.shuffle(directions)
         for dir in directions:
