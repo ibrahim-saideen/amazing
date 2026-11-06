@@ -135,17 +135,4 @@ def main() -> None:
     dic['perfect'] = valid_data.perfect
 
 
-'''
-    try:
-        print(valid_data.width)
-        print(valid_data.height)
-        print(valid_data.entry)
-        print(valid_data.exit)
-        print(valid_data.output_file)
-        print(valid_data.perfect)
-    except Exception as e:
-        print(e)
-'''
-
-
 main()

@@ -1,6 +1,3 @@
-
-
-
 def draw_maze(maze):
     for row in maze:
         for cell in row:

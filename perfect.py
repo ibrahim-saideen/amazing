@@ -69,6 +69,7 @@ def creat_maze(row: int, col: int) -> NDArray:
         [1, 1, 1, 1, 8, 1, 1, 1, 8, 8, 8, 8, 8],
     ]
 
+
     grid[a: a + 9, b: b + 13] = pattern
 
     y, x = (1, 1)
@@ -86,5 +87,4 @@ def creat_maze(row: int, col: int) -> NDArray:
                 break
         else:
             stack.pop()
-
     return grid

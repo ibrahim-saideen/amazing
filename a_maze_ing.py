@@ -1,4 +1,4 @@
-from maze_first import creat_maze
+from perfect import creat_maze
 from shortest_path import grid_point, shortest_path
 from read_config import dic, main
 from gen_output_file import hexa_maze, path_directions
@@ -29,7 +29,7 @@ try:
 except ValueError as e:
     print(e)
     exit()
- 
+
 path = (shortest_path(start, end, maze))
 hexa_maze(maze, output_file)
 path_directions(path, start, end, output_file)
@@ -75,7 +75,7 @@ while True:
         count += 1
         if count % 2 == 0:
             draw_maze(maze)
-        else :
+        else:
             draw_maze_with_path(maze)
     elif choice == '3':
         ...
@@ -83,11 +83,3 @@ while True:
         break
     else:
         print('Invalid choice')
-        
-       
-
-        
-
-
-        
-
