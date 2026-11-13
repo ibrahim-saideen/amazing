@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from numpy.typing import NDArray
+from read_config import dic
 
 
 def remove_dead_ends(grid: NDArray) -> None:
@@ -118,6 +119,9 @@ def create_non_perfect(row: int, col: int, loop_chance: float = 0.3) -> NDArray:
     grid[1, 1] = 0
     stack = [(1, 1)]
     directions = [left, right, up, down]
+
+    if dic['seed'] !=  None:
+        random.seed(dic['seed'])
 
     while stack:
         cy, cx = stack[-1]

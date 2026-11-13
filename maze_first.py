@@ -1,6 +1,8 @@
 import random
 import numpy as np
 from numpy._typing import NDArray
+from read_config import dic
+
 
 def left(row: int, col: int, grid: NDArray) -> tuple[int, int] | bool:
     if col - 2 > 0 and grid[row][col - 2] == 1 and grid[row][col - 1] != 8:
@@ -67,6 +69,8 @@ def creat_maze(row: int, col: int) -> NDArray:
 
     grid[y, x] = 0
     stack = [(y, x)]
+    if dic['seed'] != None:
+        random.seed(dic['seed'])
     while stack:
         a, b = stack[-1]
         directions = [left, right, up, down]

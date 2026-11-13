@@ -12,6 +12,7 @@ class Data(BaseModel):
     exit: str
     output_file: str
     perfect: bool = False
+    seed: int | None
 
     @model_validator(mode='after')
     def check_output(self) -> Self:
@@ -64,88 +65,72 @@ dic = {
     'entry': None,
     'exit': None,
     'output_file': None,
-    'perfect': False
+    'perfect': False,
+    'seed': None
 }
 
+if len(sys.argv) < 2:
+    print('Error: NO config file given')
+    exit()
 
-def main() -> None:
+try:
+    with open(sys.argv[1]) as file:
+        lines = file.readlines()
+except Exception:
+    print(f"Error: Could not read file '{sys.argv[1]}'")
+    exit()
 
-    if len(sys.argv) < 2:
-        print('Error: NO config file given')
-        exit()
+exit_falg = 0
+for line in lines:
+    line = line.strip()
+    if not line or line.startswith('#'):
+        continue
 
-    try:
-        with open(sys.argv[1]) as file:
-            lines = file.readlines()
-    except Exception:
-        print(f"Error: Could not read file '{sys.argv[1]}'")
-        exit()
-
-    exit_falg = 0
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-
-        if '=' not in line:
-            continue
-
-        try:
-            key, val = line.split('=', 1)
-            key = key.strip().lower()
-            val = val.strip()
-
-            if key not in dic:
-                raise ValueError(f"Key '{key}' is not a valid key")
-            dic[key] = val
-        except ValueError as e:
-            print(e)
-            exit_flag = 1
-
-    if exit_falg:
-        exit()
+    if '=' not in line:
+        continue
 
     try:
-        valid_data = Data(
+        key, val = line.split('=', 1)
+        key = key.strip().lower()
+        val = val.strip()
 
-            width=dic['width'],
-            height=dic['height'],
-            entry=dic['entry'],
-            exit=dic['exit'],
-            output_file=dic['output_file'],
-            perfect=dic['perfect']
-        )
-
+        if key not in dic:
+            raise ValueError(f"Key '{key}' is not a valid key")
+        dic[key] = val
     except ValueError as e:
-        print(e.errors()[0]['msg'])
-        exit()
-
-    dic['width'] = valid_data.width
-    dic['height'] = valid_data.height
-    lst = valid_data.entry.split(',')
-    x = int(lst[0])
-    y = int(lst[1])
-    dic['entry'] = (x, y)
-    lst = []
-    lst = valid_data.exit.split(',')
-    x = int(lst[0])
-    y = int(lst[1])
-    dic['exit'] = (x, y)
-    dic['output_file'] = valid_data.output_file
-    dic['perfect'] = valid_data.perfect
-
-
-'''
-    try:
-        print(valid_data.width)
-        print(valid_data.height)
-        print(valid_data.entry)
-        print(valid_data.exit)
-        print(valid_data.output_file)
-        print(valid_data.perfect)
-    except Exception as e:
         print(e)
-'''
+        exit_flag = 1
 
+if exit_falg:
+    exit()
 
-main()
+try:
+    valid_data = Data(
+
+        width=dic['width'],
+        height=dic['height'],
+        entry=dic['entry'],
+        exit=dic['exit'],
+        output_file=dic['output_file'],
+        perfect=dic['perfect'],
+        seed=dic['seed']
+    )
+
+except ValueError as e:
+    print(e.errors()[0]['msg'])
+    exit()
+
+dic['width'] = valid_data.width
+dic['height'] = valid_data.height
+lst = valid_data.entry.split(',')
+x = int(lst[0])
+y = int(lst[1])
+dic['entry'] = (x, y)
+lst = []
+lst = valid_data.exit.split(',')
+x = int(lst[0])
+y = int(lst[1])
+dic['exit'] = (x, y)
+dic['output_file'] = valid_data.output_file
+dic['perfect'] = valid_data.perfect
+
