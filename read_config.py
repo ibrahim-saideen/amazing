@@ -1,32 +1,75 @@
 import sys
 from typing import Self
-from pydantic import BaseModel, Field, model_validator
+from pydantic import (BaseModel,
+                      ValidationError, model_validator, field_validator)
+from typing import Any
 
 
 class Data(BaseModel):
 
-    model_config = {"validate_assignment": True}
-    width: int = Field(ge=9, le=50)
-    height: int = Field(ge=7, le=50)
-    entry: str
-    exit: str
-    output_file: str
-    perfect: bool = False
+    """
+        A Class that lists our config file attributes
+            with the right restriction rules applied to each one.
+    """
+
+    width: int | None
+    height: int | None
+    entry: str | None
+    exit: str | None
+    output_file: str | None
+    perfect: bool | None
     seed: int | None
 
-    @model_validator(mode='after')
-    def check_output(self) -> Self:
+    @field_validator("width")
+    @classmethod
+    def check_width(cls, width: int | None) -> int:
+        """
+        A validator for checking the width of the inputs
+        """
+        if width is None:
+            raise ValueError('Missing configuration arguement, (width)')
+
+        if width < 9 or width > 50:
+            raise ValueError(
+                'width should be greater than or equal to 9 or less than or equal to 50')
+
+        return width
+
+    @field_validator("height")
+    @classmethod
+    def check_height(cls, height: int | None) -> int:
+        """
+        A validator for checking the width of the inputs
+        """
+        if height is None:
+            raise ValueError('Missing configuration arguement, (height)')
+        if height < 7 or height > 50:
+            raise ValueError(
+                'height should be greater than or equal to 7 or less than or equal to 50')
+
+        return height
+
+    @field_validator("output_file")
+    @classmethod
+    def check_output(cls, output: str | None) -> str:
         """
         A validator for checking the outpuf file format
         """
 
-        if not self.output_file.endswith('.txt'):
-            raise ValueError('Error, Output file must be of format ".txt!"')
+        if output is None:
+            raise ValueError('Missing configuration arguement, (output)')
 
-        return self
+        if '.' in output:
+            if not output.endswith('.txt'):
+                raise ValueError('Output file must be of format ".txt!"')
+
+        return output
 
     @model_validator(mode='after')
     def check_entry(self) -> Self:
+
+        if self.entry is None:
+            raise ValueError(f'Missing configuration arguement, (entry)')
 
         if self.entry.count(',') != 1:
             raise ValueError(
@@ -35,15 +78,21 @@ class Data(BaseModel):
 
         if not (lst_entry[0].isnumeric() or lst_entry[1].isnumeric()):
             raise ValueError(
-                "Error, Invalid tuple values ; should be of type 'int' ")
+                " Invalid tuple values ; should be of type 'int' ")
 
-        if (int(lst_entry[0]) > self.height - 1) or (int(lst_entry[1]) > self.width - 1):
-            raise ValueError('Error, Out of range !')
+        if isinstance(self.height, int) and isinstance(self.width, int):
+            if (
+                int(lst_entry[0]) > self.height - 1
+            ) or (int(lst_entry[1]) > self.width - 1):
+                raise ValueError('Error, Out of range !')
 
         return self
 
     @model_validator(mode='after')
     def check_exit(self) -> Self:
+
+        if self.exit is None:
+            raise ValueError('Missing configuration arguement, (exit)')
 
         if self.exit.count(',') != 1:
             raise ValueError('Error, Not a valid entry point')
@@ -53,34 +102,47 @@ class Data(BaseModel):
             raise ValueError(
                 'Error, Not a valid entry point : (int, int) accepted only !')
 
-        if (int(lst_exit[0]) > self.height - 1) or (int(lst_exit[1]) > self.width - 1):
-            raise ValueError('Error, Out of range !')
+        if isinstance(self.height, int) and isinstance(self.width, int):
+            if (
+                int(lst_exit[0]) > self.height - 1
+            ) or (int(lst_exit[1]) > self.width - 1):
+                raise ValueError('Error, Out of range !')
 
         return self
 
+    @field_validator('perfect')
+    @classmethod
+    def check_perfect(cls, perfect: bool | None) -> bool:
 
-dic = {
-    'width': 0,
-    'height': 0,
+        if perfect is None:
+            raise ValueError('Missing configuration arguement, (perfect)')
+
+        return perfect
+
+
+dic: dict[str, Any] = {
+    'width': None,
+    'height': None,
     'entry': None,
     'exit': None,
     'output_file': None,
-    'perfect': False,
+    'perfect': None,
     'seed': None
 }
 
-if len(sys.argv) < 2:
-    print('Error: NO config file given')
-    exit()
+
+if len(sys.argv) != 2:
+    print('Wrong number of arguements, Excpect 2 !')
+    exit(1)
 
 try:
     with open(sys.argv[1]) as file:
         lines = file.readlines()
+
 except Exception:
-    print(f"Error: Could not read file '{sys.argv[1]}'")
+    print(f"Could not read file '{sys.argv[1]}'")
     exit()
 
-exit_falg = 0
 for line in lines:
     line = line.strip()
     if not line or line.startswith('#'):
@@ -99,10 +161,6 @@ for line in lines:
         dic[key] = val
     except ValueError as e:
         print(e)
-        exit_flag = 1
-
-if exit_falg:
-    exit()
 
 try:
     valid_data = Data(
@@ -116,21 +174,23 @@ try:
         seed=dic['seed']
     )
 
-except ValueError as e:
+except ValidationError as e:
     print(e.errors()[0]['msg'])
     exit()
 
 dic['width'] = valid_data.width
 dic['height'] = valid_data.height
-lst = valid_data.entry.split(',')
-x = int(lst[0])
-y = int(lst[1])
-dic['entry'] = (x, y)
-lst = []
-lst = valid_data.exit.split(',')
-x = int(lst[0])
-y = int(lst[1])
-dic['exit'] = (x, y)
+lst1 = []
+if isinstance(valid_data.entry, str):
+    lst1 = valid_data.entry.split(',')
+x1 = int(lst1[0])
+y1 = int(lst1[1])
+dic['entry'] = (x1, y1)
+lst2 = []
+if isinstance(valid_data.exit, str):
+    lst2 = valid_data.exit.split(',')
+x2 = int(lst2[0])
+y2 = int(lst2[1])
+dic['exit'] = (x2, y2)
 dic['output_file'] = valid_data.output_file
 dic['perfect'] = valid_data.perfect
-

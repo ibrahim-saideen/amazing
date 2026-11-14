@@ -33,7 +33,7 @@ try:
 except ValueError as e:
     print(e)
     exit()
- 
+
 path = (shortest_path(start, end, maze))
 hexa_maze(maze, output_file)
 path_directions(path, start, end, output_file)
@@ -78,22 +78,22 @@ while True:
         maze[x][y] = 7
         x, y = path[-1]
         maze[x][y] = 7
-        draw_maze(maze, color_count%3)
+        draw_maze(maze, color_count % 3)
     elif choice == '2':
         clear_terminal()
         show_path = not show_path
         if show_path:
-            draw_maze_with_path(maze, color_count%3)
-        else :
-            draw_maze(maze, color_count%3)
+            draw_maze_with_path(maze, color_count % 3)
+        else:
+            draw_maze(maze, color_count % 3)
     elif choice == '3':
         clear_terminal()
         color_count += 1
         if show_path:
-            draw_maze_with_path(maze, color_count%3)
+            draw_maze_with_path(maze, color_count % 3)
         else:
-            draw_maze(maze, color_count%3)
-        
+            draw_maze(maze, color_count % 3)
+
     elif choice == '4':
         break
     else:
