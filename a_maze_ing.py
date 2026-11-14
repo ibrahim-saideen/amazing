@@ -1,4 +1,4 @@
-from maze_first import creat_maze
+from perfect import create_maze
 from shortest_path import grid_point, shortest_path
 from read_config import dic
 from gen_output_file import hexa_maze, path_directions
@@ -20,7 +20,7 @@ perfect = dic['perfect']
 
 
 if perfect == True:
-    maze = creat_maze(height, width)
+    maze = create_maze(height, width)
 else:
     maze = create_non_perfect(height, width)
 
@@ -64,7 +64,7 @@ while True:
         color_count = 0
         show_path = False
         if perfect == True:
-            maze = creat_maze(height, width)
+            maze = create_maze(height, width)
         else:
             maze = create_non_perfect(height, width)
 
