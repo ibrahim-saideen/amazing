@@ -1,6 +1,7 @@
-WiDTH=15
-HeIGHT= 15
-ENTRY=0,0
-EXIT=10,10
-OUTPUT_FILE=KOS.txt
-PERFECT=False
+WiDTH=20
+HeIGHT=20
+ENTRY=5,5
+EXIT=5,5
+OUTPUT_FILE = hello
+perfect=false
+seed=100

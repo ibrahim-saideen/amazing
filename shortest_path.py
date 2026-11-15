@@ -65,8 +65,8 @@ def shortest_path(start, end, maze):
                 viseted_cells.append(next_cell)
                 if next_cell == end:
                     break
-        if next_cell == end:
-            break
+            if next_cell == end:
+                break
     path = []
     current = end
 

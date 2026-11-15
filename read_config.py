@@ -31,7 +31,8 @@ class Data(BaseModel):
 
         if width < 9 or width > 50:
             raise ValueError(
-                'width should be greater than or equal to 9 or less than or equal to 50')
+                'width should be greater'
+                'than or equal to 9 or less than or equal to 50')
 
         return width
 
@@ -45,7 +46,8 @@ class Data(BaseModel):
             raise ValueError('Missing configuration arguement, (height)')
         if height < 7 or height > 50:
             raise ValueError(
-                'height should be greater than or equal to 7 or less than or equal to 50')
+                'height should be greater'
+                'than or equal to 7 or less than or equal to 50')
 
         return height
 
@@ -69,7 +71,7 @@ class Data(BaseModel):
     def check_entry(self) -> Self:
 
         if self.entry is None:
-            raise ValueError(f'Missing configuration arguement, (entry)')
+            raise ValueError('Missing configuration arguement, (entry)')
 
         if self.entry.count(',') != 1:
             raise ValueError(
@@ -107,6 +109,14 @@ class Data(BaseModel):
                 int(lst_exit[0]) > self.height - 1
             ) or (int(lst_exit[1]) > self.width - 1):
                 raise ValueError('Error, Out of range !')
+
+        return self
+
+    @model_validator(mode='after')
+    def check_entry_exit(self) -> Self:
+
+        if self.entry == self.exit:
+            raise ValueError('Entry and exit points cannot be the same!')
 
         return self
 

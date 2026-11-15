@@ -78,7 +78,7 @@ def create_maze(row: int, col: int) -> GridArray:
 
     grid[y, x] = 0
     stack = [(y, x)]
-    if dic['seed'] != None:
+    if dic['seed'] is not None:
         random.seed(dic['seed'])
     while stack:  # not empty
         cur_y, cur_x = stack[-1]

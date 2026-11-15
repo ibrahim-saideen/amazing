@@ -36,5 +36,5 @@ def draw_maze_with_path(maze, color):
             elif cell == 8:
                 print("🟩", end="")
             else:
-                print("⬤", end=" ")
+                print("⦁︎", end=" ")
         print()
