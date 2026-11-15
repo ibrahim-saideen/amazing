@@ -1,6 +1,8 @@
+from numpy.typing import NDArray
+import numpy as np
+GridArray = NDArray[np.float64]
 
-
-def draw_maze(maze, color):
+def draw_maze(maze: GridArray, color: int) -> None:
     for row in maze:
         for cell in row:
             if cell == 0 or cell == 9:
@@ -19,8 +21,8 @@ def draw_maze(maze, color):
         print()
 
 
-def draw_maze_with_path(maze, color):
-     for row in maze:
+def draw_maze_with_path(maze: GridArray, color: int) -> None:
+    for row in maze:
         for cell in row:
             if cell == 0:
                 print(" ", end=" ")

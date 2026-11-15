@@ -1,14 +1,17 @@
+import subprocess
 from perfect import create_maze
 from shortest_path import grid_point, shortest_path
 from read_config import dic
 from gen_output_file import hexa_maze, path_directions
 from draw_maze import draw_maze, draw_maze_with_path
 from non_perfect import create_non_perfect
-import os
 
 
 def clear_terminal():
-    os.system('clear')
+    '''
+        A terminal cleaner function
+    '''
+    subprocess.run('clear', check=True)
 
 
 height = dic['height']
