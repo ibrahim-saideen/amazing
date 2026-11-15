@@ -23,9 +23,7 @@ class Data(BaseModel):
     @field_validator("width")
     @classmethod
     def check_width(cls, width: int | None) -> int:
-        """
-        A validator for checking the width of the inputs
-        """
+
         if width is None:
             raise ValueError('Missing configuration arguement, (width)')
 
@@ -39,9 +37,7 @@ class Data(BaseModel):
     @field_validator("height")
     @classmethod
     def check_height(cls, height: int | None) -> int:
-        """
-        A validator for checking the width of the inputs
-        """
+
         if height is None:
             raise ValueError('Missing configuration arguement, (height)')
         if height < 7 or height > 50:
@@ -54,9 +50,6 @@ class Data(BaseModel):
     @field_validator("output_file")
     @classmethod
     def check_output(cls, output: str | None) -> str:
-        """
-        A validator for checking the outpuf file format
-        """
 
         if output is None:
             raise ValueError('Missing configuration arguement, (output)')

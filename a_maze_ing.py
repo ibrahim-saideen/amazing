@@ -29,7 +29,7 @@ c, d = grid_point(end)
 
 try:
     if maze[a][b] == 8 or maze[c][d] == 8:
-        raise ValueError('chose a valid point')
+        raise ValueError('choose a valid point')
 except ValueError as e:
     print(e)
     exit()
