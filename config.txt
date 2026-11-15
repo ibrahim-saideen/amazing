@@ -3,4 +3,4 @@ HeIGHT=20
 ENTRY=0,0
 EXIT=19,19
 OUTPUT_FILE = hello
-perfect=false
+perfect=True
