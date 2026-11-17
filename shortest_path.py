@@ -1,8 +1,9 @@
 from collections import deque
 from numpy.typing import NDArray
-
 import numpy as np
+
 GridArray = NDArray[np.float64]
+
 
 def grid_point(maze_point: tuple[int, int]) -> tuple[int, int]:
     x, y = maze_point
@@ -55,7 +56,7 @@ def shortest_path(
     dq: deque[tuple[int, int]] = deque()
     dq.append(start)
 
-    parents: dict[tuple[int, int] , tuple[int, int] | None] = {}
+    parents: dict[tuple[int, int], tuple[int, int] | None] = {}
     parents[start] = None
     directions = [up, right, down, left]
     viseted_cells = []

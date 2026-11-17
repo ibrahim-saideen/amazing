@@ -3,8 +3,10 @@ import numpy as np
 from numpy.typing import NDArray
 from read_config import dic
 
+GridArray = NDArray[np.float64]
 
-def remove_dead_ends(grid: NDArray) -> None:
+
+def remove_dead_ends(grid: GridArray) -> None:
     rows, cols = grid.shape
 
     directions = [
@@ -47,9 +49,8 @@ def remove_dead_ends(grid: NDArray) -> None:
                     changed = True
 
 
-def add_loops(grid: NDArray, chance: float = 0.1) -> None:
+def add_loops(grid: GridArray, chance: float = 0.1) -> None:
     rows, cols = grid.shape
-    #print(grid.shape)
     for r in range(1, rows - 1):
         for c in range(1, cols - 1):
             if (r + c) % 2 == 0 or grid[r][c] != 1:
@@ -64,7 +65,7 @@ def add_loops(grid: NDArray, chance: float = 0.1) -> None:
                 grid[r][c] = 0
 
 
-def left(row: int, col: int, grid: NDArray) -> tuple[int, int] | None:
+def left(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
     if col - 2 > 0 and grid[row][col - 2] == 1 and grid[row][col - 1] != 8:
         grid[row][col - 2] = 0
         grid[row][col - 1] = 0
@@ -72,31 +73,35 @@ def left(row: int, col: int, grid: NDArray) -> tuple[int, int] | None:
     return None
 
 
-def right(row: int, col: int, grid: NDArray) -> tuple[int, int] | None:
-    if col + 2 < len(grid[0]) - 1 and grid[row][col + 2] == 1 and grid[row][col + 1] != 8:
+def right(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+    if col + 2 < len(grid[0]) - 1 and grid[
+            row][col + 2] == 1 and grid[row][col + 1] != 8:
         grid[row][col + 2] = 0
         grid[row][col + 1] = 0
         return (row, col + 2)
     return None
 
 
-def up(row: int, col: int, grid: NDArray) -> tuple[int, int] | None:
-    if row - 2 > 0 and grid[row - 2][col] == 1 and grid[row - 1][col] != 8:
+def up(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+    if row - 2 > 0 and grid[
+            row - 2][col] == 1 and grid[row - 1][col] != 8:
         grid[row - 2][col] = 0
         grid[row - 1][col] = 0
         return (row - 2, col)
     return None
 
 
-def down(row: int, col: int, grid: NDArray) -> tuple[int, int] | None:
-    if row + 2 < len(grid) - 1 and grid[row + 2][col] == 1 and grid[row + 1][col] != 8:
+def down(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+    if row + 2 < len(grid) - 1 and grid[
+            row + 2][col] == 1 and grid[row + 1][col] != 8:
         grid[row + 2][col] = 0
         grid[row + 1][col] = 0
         return (row + 2, col)
     return None
 
 
-def create_non_perfect(row: int, col: int, loop_chance: float = 0.3) -> NDArray:
+def create_non_perfect(
+        row: int, col: int, loop_chance: float = 0.3) -> GridArray:
     grid = np.ones((row * 2 + 1, col * 2 + 1), dtype=int)
 
     pattern = [
@@ -114,13 +119,13 @@ def create_non_perfect(row: int, col: int, loop_chance: float = 0.3) -> NDArray:
     if row >= 5 and col >= 7:
         pa = ((row - 5) // 2) * 2 + 1
         pb = ((col - 7) // 2) * 2 + 1
-        grid[pa : pa + 9, pb : pb + 13] = pattern
+        grid[pa: pa + 9, pb: pb + 13] = pattern
 
     grid[1, 1] = 0
     stack = [(1, 1)]
     directions = [left, right, up, down]
 
-    if dic['seed'] !=  None:
+    if dic['seed'] is not None:
         random.seed(dic['seed'])
 
     while stack:

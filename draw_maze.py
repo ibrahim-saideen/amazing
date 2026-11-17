@@ -2,6 +2,7 @@ from numpy.typing import NDArray
 import numpy as np
 GridArray = NDArray[np.float64]
 
+
 def draw_maze(maze: GridArray, color: int) -> None:
     for row in maze:
         for cell in row:

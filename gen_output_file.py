@@ -1,26 +1,33 @@
-def north(grid, cell):
+from numpy.typing import NDArray
+import numpy as np
+GridArray = NDArray[np.float64]
+
+
+def north(grid: GridArray, cell: tuple[int, int]) -> int:
     x, y = cell
     if grid[x-1][y] == 0:
         return 0
     else:
         return 1
-        
 
-def east(grid, cell):
+
+def east(grid: GridArray, cell: tuple[int, int]) -> int:
     x, y = cell
     if grid[x][y+1] == 0:
         return 0
     else:
         return 2
 
-def south(grid, cell):
+
+def south(grid: GridArray, cell: tuple[int, int]) -> int:
     x, y = cell
     if grid[x+1][y] == 0:
         return 0
     else:
         return 4
 
-def west(grid, cell):
+
+def west(grid: GridArray, cell: tuple[int, int]) -> int:
     x, y = cell
     if grid[x][y-1] == 0:
         return 0
@@ -28,21 +35,20 @@ def west(grid, cell):
         return 8
 
 
+def check_directions(grid: GridArray, cell: tuple[int, int]) -> int:
 
-def check_directions(grid, cell):
-
-    cell_value = 0
+    cell_value: int = 0
     direction = [north, east, south, west]
     for dir in direction:
         cell_value += dir(grid, cell)
-    
+
     return cell_value
 
 
-def hexa_maze(grid, output_file):
+def hexa_maze(grid: GridArray, output_file: str) -> None:
 
     with open(output_file, 'w') as file:
-    
+
         for r in range(1, len(grid), 2):
             for c in range(1, len(grid[r]), 2):
                 hexa = f'{(check_directions(grid, (r, c))):X}'
@@ -50,7 +56,13 @@ def hexa_maze(grid, output_file):
             file.write('\n')
         file.write('\n')
 
-def path_directions(path, start, end, output_file):
+
+def path_directions(
+        path: list[
+        tuple[int, int]
+        ], start:
+        tuple[int, int], end: tuple[int, int], output_file: str) -> None:
+
     with open(output_file, 'a') as file:
         result = ", ".join(map(str, start))
         file.write(result + '\n')
@@ -68,4 +80,3 @@ def path_directions(path, start, end, output_file):
             elif (x, y-2) == path[i+1]:
                 file.write('W')
         file.write('\n')
-

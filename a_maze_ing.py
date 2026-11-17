@@ -7,7 +7,7 @@ from draw_maze import draw_maze, draw_maze_with_path
 from non_perfect import create_non_perfect
 
 
-def clear_terminal():
+def clear_terminal() -> None:
     '''
         A terminal cleaner function
     '''
@@ -22,7 +22,7 @@ output_file = dic['output_file']
 perfect = dic['perfect']
 
 
-if perfect == True:
+if perfect is True:
     maze = create_maze(height, width)
 else:
     maze = create_non_perfect(height, width)
@@ -62,7 +62,7 @@ while True:
     print('4. Quit')
     try:
         choice = input('Choice? (1-4): ')
-    except KeyboardInterrupt as e:
+    except KeyboardInterrupt:
         print('\nPlease choose an option (1-4).')
         continue
 
@@ -70,7 +70,7 @@ while True:
         clear_terminal()
         color_count = 0
         show_path = False
-        if perfect == True:
+        if perfect is True:
             maze = create_maze(height, width)
         else:
             maze = create_non_perfect(height, width)
@@ -99,7 +99,7 @@ while True:
         if show_path:
             draw_maze_with_path(maze, color_count % 3)
         else:
-            draw_maze(maze, color_count % 3)
+            draw_maze(maze, color_count % 4)
 
     elif choice == '4':
         break
