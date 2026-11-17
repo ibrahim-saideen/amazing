@@ -1,55 +1,61 @@
 from collections import deque
+from numpy.typing import NDArray
 
-def grid_point(maze_point):
+import numpy as np
+GridArray = NDArray[np.float64]
+
+def grid_point(maze_point: tuple[int, int]) -> tuple[int, int]:
     x, y = maze_point
-    x = x*2 + 1
-    y = y*2 + 1
-    return ((x, y))
+    x = x * 2 + 1
+    y = y * 2 + 1
+    return (x, y)
 
 
-def left(a, b, maze):
+def left(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
 
-    if b-2 > 0 and maze[a][b-2] == 0 and maze[a][b-1] == 0:
-        return ((a, b-2))
+    if col-2 > 0 and grid[row][col-2] == 0 and grid[row][col-1] == 0:
+        return ((row, col-2))
     else:
-        return False
+        return None
 
 
-def right(a, b, maze):
+def right(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
 
-    w = (len(maze[0]) - 1) / 2
-    if b+2 < w*2 and maze[a][b+2] == 0 and maze[a][b+1] == 0:
-        return ((a, b+2))
+    w = (len(grid[0]) - 1) / 2
+    if col+2 < w*2 and grid[row][col+2] == 0 and grid[row][col+1] == 0:
+        return ((row, col+2))
     else:
-        return False
+        return None
 
 
-def up(a, b, maze):
-
-    if a-2 > 0 and maze[a-2][b] == 0 and maze[a-1][b] == 0:
-        return ((a-2, b))
+def up(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+    if row-2 > 0 and grid[row-2][col] == 0 and grid[row-1][col] == 0:
+        return ((row-2, col))
     else:
-        return False
+        return None
 
 
-def down(a, b, maze):
+def down(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
 
-    h = (len(maze) - 1) / 2
-    if a+2 < h*2 and maze[a+2][b] == 0 and maze[a+1][b] == 0:
-        return ((a+2, b))
+    h = (len(grid) - 1) / 2
+    if row+2 < h*2 and grid[row+2][col] == 0 and grid[row+1][col] == 0:
+        return ((row+2, col))
     else:
-        return False
+        return None
 
 
-def shortest_path(start, end, maze):
+def shortest_path(
+        start: tuple[
+        int, int
+        ], end: tuple[int, int], grid: GridArray) -> list[tuple[int, int]]:
 
     start = grid_point(start)
     end = grid_point(end)
 
-    dq = deque()
+    dq: deque[tuple[int, int]] = deque()
     dq.append(start)
 
-    parents = {}
+    parents: dict[tuple[int, int] , tuple[int, int] | None] = {}
     parents[start] = None
     directions = [up, right, down, left]
     viseted_cells = []
@@ -58,7 +64,7 @@ def shortest_path(start, end, maze):
         x, y = dq.popleft()
         viseted_cells.append((x, y))
         for dir in directions:
-            next_cell = dir(x, y, maze)
+            next_cell = dir(x, y, grid)
             if next_cell and next_cell not in viseted_cells:
                 parents[next_cell] = (x, y)
                 dq.append(next_cell)
@@ -68,7 +74,7 @@ def shortest_path(start, end, maze):
             if next_cell == end:
                 break
     path = []
-    current = end
+    current: tuple[int, int] | None = end
 
     while current is not None:
         path.append(current)
