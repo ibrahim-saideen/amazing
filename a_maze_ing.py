@@ -99,7 +99,7 @@ while True:
         if show_path:
             draw_maze_with_path(maze, color_count % 3)
         else:
-            draw_maze(maze, color_count % 4)
+            draw_maze(maze, color_count % 3)
 
     elif choice == '4':
         break
