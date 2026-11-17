@@ -60,7 +60,11 @@ while True:
     print('2. Show/Hide path from entry to exit')
     print('3. rotate maze colors')
     print('4. Quit')
-    choice = input('Choice? (1-4): ')
+    try:
+        choice = input('Choice? (1-4): ')
+    except KeyboardInterrupt as e:
+        print('\nPlease choose an option (1-4).')
+        continue
 
     if choice == '1':
         clear_terminal()
