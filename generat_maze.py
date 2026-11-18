@@ -100,8 +100,8 @@ def down(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
     return None
 
 
-def create_non_perfect(
-        row: int, col: int, loop_chance: float = 0.3) -> GridArray:
+def create_maze(
+        row: int, col: int, perfect: bool) -> GridArray:
     grid = np.ones((row * 2 + 1, col * 2 + 1), dtype=int)
 
     pattern = [
@@ -139,7 +139,8 @@ def create_non_perfect(
         else:
             stack.pop()
 
-    add_loops(grid, loop_chance)
-    remove_dead_ends(grid)
+    if not perfect:
+        add_loops(grid, 0.3)
+        remove_dead_ends(grid)
 
     return grid

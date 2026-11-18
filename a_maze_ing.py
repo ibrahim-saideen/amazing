@@ -1,10 +1,9 @@
 import subprocess
-from perfect import create_maze
 from shortest_path import grid_point, shortest_path
 from read_config import dic
 from gen_output_file import hexa_maze, path_directions
 from draw_maze import draw_maze, draw_maze_with_path
-from non_perfect import create_non_perfect
+from generat_maze import create_maze
 
 
 def clear_terminal() -> None:
@@ -21,11 +20,7 @@ end = dic['exit']
 output_file = dic['output_file']
 perfect = dic['perfect']
 
-
-if perfect is True:
-    maze = create_maze(height, width)
-else:
-    maze = create_non_perfect(height, width)
+maze = create_maze(height, width, perfect)
 
 a, b = grid_point(start)
 c, d = grid_point(end)
@@ -70,10 +65,7 @@ while True:
         clear_terminal()
         color_count = 0
         show_path = False
-        if perfect is True:
-            maze = create_maze(height, width)
-        else:
-            maze = create_non_perfect(height, width)
+        maze = create_maze(height, width, perfect)
 
         path = (shortest_path(start, end, maze))
         hexa_maze(maze, output_file)

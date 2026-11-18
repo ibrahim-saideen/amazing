@@ -1,6 +1,6 @@
-WiDTH=20
-HeIGHT=20
+WiDTH=15
+HeIGHT=10
 ENTRY=0,0
-EXIT=19,19
+EXIT=9,14
 OUTPUT_FILE = hello
-perfect=True
+perfect=False
