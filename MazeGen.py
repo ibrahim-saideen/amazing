@@ -1,33 +1,48 @@
+
 import random
 import numpy as np
-from numpy.typing import NDArray
 
+from numpy.typing import NDArray
 from collections import deque
 
-GridArray = NDArray[np.float64]
+GridArray = NDArray[np.int_]
 
 
-class MazeGeneartor:
-    def __init__(self, height, width, perfect=False):
+class MazeGenerator:
 
-        try:
-            if height < 7:
-                    raise ValueError ('Error, height must be greater than or equal to 7')
-            if width < 9:
-                    raise ValueError ('Error, width must be greater than or equal to 9')
-            
-            self.height = height
-            self.width = width
-            self.perfect = perfect
-        except ValueError as e:
-            print(e)
-            exit(1)
-        
-        
-    def generate_maze(self):
+    def __init__(
+        self,
+        height: int,
+        width: int,
+        perfect: bool = False,
+        seed: int | None = None
+    ) -> None:
 
-        
+        if height < 7:
+            raise ValueError(
+                "Error, height must be greater than or equal to 7"
+            )
+
+        if width < 9:
+            raise ValueError(
+                "Error, width must be greater than or equal to 9"
+            )
+
+        self.height = height
+        self.width = width
+        self.perfect = perfect
+        self.seed = seed
+        self.rng = random.Random(seed)
+
+        self.grid: GridArray | None = None
+
+    def generate_maze(self) -> GridArray:
+
+        # Reset random generator to make the seed reproducible
+        self.rng = random.Random(self.seed)
+
         def remove_dead_ends(grid: GridArray) -> None:
+
             rows, cols = grid.shape
 
             directions = [
@@ -55,25 +70,42 @@ class MazeGeneartor:
                             nr, nc = r + dr, c + dc
                             wr, wc = r + dr // 2, c + dc // 2
 
-                            if not (0 < nr < rows - 1 and 0 < nc < cols - 1):
+                            if not (
+                                0 < nr < rows - 1
+                                and 0 < nc < cols - 1
+                            ):
                                 continue
 
-                            if grid[nr][nc] == 0 and grid[wr][wc] == 0:
+                            if (
+                                grid[nr][nc] == 0
+                                and grid[wr][wc] == 0
+                            ):
                                 connected += 1
 
-                            elif grid[nr][nc] == 0 and grid[wr][wc] == 1:
+                            elif (
+                                grid[nr][nc] == 0
+                                and grid[wr][wc] == 1
+                            ):
                                 candidates.append((wr, wc))
 
                         if connected == 1 and candidates:
-                            wr, wc = random.choice(candidates)
+                            wr, wc = self.rng.choice(candidates)
                             grid[wr][wc] = 0
                             changed = True
 
+        def add_loops(
+            grid: GridArray,
+            chance: float = 0.1
+        ) -> None:
 
-        def add_loops(grid: GridArray, chance: float = 0.1) -> None:
+            if not 0 <= chance <= 1:
+                raise ValueError("Chance must be between 0 and 1")
+
             rows, cols = grid.shape
+
             for r in range(1, rows - 1):
                 for c in range(1, cols - 1):
+
                     if (r + c) % 2 == 0 or grid[r][c] != 1:
                         continue
 
@@ -82,51 +114,89 @@ class MazeGeneartor:
                     else:
                         before, after = grid[r - 1][c], grid[r + 1][c]
 
-                    if before == 0 and after == 0 and random.random() < chance:
+                    if (
+                        before == 0
+                        and after == 0
+                        and self.rng.random() < chance
+                    ):
                         grid[r][c] = 0
 
+        def left(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def left(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
-            if col - 2 > 0 and grid[row][col - 2] == 1 and grid[row][col - 1] != 8:
+            if (
+                col - 2 > 0
+                and grid[row][col - 2] == 1
+                and grid[row][col - 1] != 8
+            ):
                 grid[row][col - 2] = 0
                 grid[row][col - 1] = 0
                 return (row, col - 2)
+
             return None
 
+        def right(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def right(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
-            if col + 2 < len(grid[0]) - 1 and grid[
-                    row][col + 2] == 1 and grid[row][col + 1] != 8:
+            if (
+                col + 2 < grid.shape[1] - 1
+                and grid[row][col + 2] == 1
+                and grid[row][col + 1] != 8
+            ):
                 grid[row][col + 2] = 0
                 grid[row][col + 1] = 0
                 return (row, col + 2)
+
             return None
 
+        def up(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def up(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
-            if row - 2 > 0 and grid[
-                    row - 2][col] == 1 and grid[row - 1][col] != 8:
+            if (
+                row - 2 > 0
+                and grid[row - 2][col] == 1
+                and grid[row - 1][col] != 8
+            ):
                 grid[row - 2][col] = 0
                 grid[row - 1][col] = 0
                 return (row - 2, col)
+
             return None
 
+        def down(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def down(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
-            if row + 2 < len(grid) - 1 and grid[
-                    row + 2][col] == 1 and grid[row + 1][col] != 8:
+            if (
+                row + 2 < grid.shape[0] - 1
+                and grid[row + 2][col] == 1
+                and grid[row + 1][col] != 8
+            ):
                 grid[row + 2][col] = 0
                 grid[row + 1][col] = 0
                 return (row + 2, col)
+
             return None
 
-
-        
         row = self.height
         col = self.width
         perfect = self.perfect
-            
-        grid = np.ones((row * 2 + 1, col * 2 + 1), dtype=int)
+
+        grid = np.ones(
+            (row * 2 + 1, col * 2 + 1),
+            dtype=int
+        )
 
         pattern = [
             [8, 1, 1, 1, 1, 1, 1, 1, 8, 8, 8, 8, 8],
@@ -143,17 +213,22 @@ class MazeGeneartor:
         if row >= 5 and col >= 7:
             pa = ((row - 5) // 2) * 2 + 1
             pb = ((col - 7) // 2) * 2 + 1
-            grid[pa: pa + 9, pb: pb + 13] = pattern
+            grid[pa:pa + 9, pb:pb + 13] = pattern
 
         grid[1, 1] = 0
+
         stack = [(1, 1)]
+
         directions = [left, right, up, down]
 
         while stack:
             cy, cx = stack[-1]
-            random.shuffle(directions)
+
+            self.rng.shuffle(directions)
+
             for move in directions:
                 result = move(cy, cx, grid)
+
                 if result is not None:
                     stack.append(result)
                     break
@@ -168,76 +243,143 @@ class MazeGeneartor:
 
         return grid
 
-    def shortest_path(self,
-        start: tuple[
-        int, int
-        ], end: tuple[int, int]) -> list[tuple[int, int]]:
+    def shortest_path(
+        self,
+        start: tuple[int, int],
+        end: tuple[int, int]
+    ) -> list[tuple[int, int]]:
 
+        if self.grid is None:
+            raise RuntimeError("Generate the maze first")
 
-        def grid_point(maze_point: tuple[int, int]) -> tuple[int, int]:
+        def grid_point(
+            maze_point: tuple[int, int]
+        ) -> tuple[int, int]:
+
             x, y = maze_point
             x = x * 2 + 1
             y = y * 2 + 1
+
             return (x, y)
 
+        def bfs_left(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def left(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+            if (
+                col - 2 > 0
+                and grid[row][col - 2] == 0
+                and grid[row][col - 1] == 0
+            ):
+                return (row, col - 2)
 
-            if col-2 > 0 and grid[row][col-2] == 0 and grid[row][col-1] == 0:
-                return ((row, col-2))
-            else:
-                return None
+            return None
 
+        def bfs_right(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def right(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+            if (
+                col + 2 < grid.shape[1] - 1
+                and grid[row][col + 2] == 0
+                and grid[row][col + 1] == 0
+            ):
+                return (row, col + 2)
 
-            w = (len(grid[0]) - 1) / 2
-            if col+2 < w*2 and grid[row][col+2] == 0 and grid[row][col+1] == 0:
-                return ((row, col+2))
-            else:
-                return None
+            return None
 
+        def bfs_up(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-        def up(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
-            if row-2 > 0 and grid[row-2][col] == 0 and grid[row-1][col] == 0:
-                return ((row-2, col))
-            else:
-                return None
+            if (
+                row - 2 > 0
+                and grid[row - 2][col] == 0
+                and grid[row - 1][col] == 0
+            ):
+                return (row - 2, col)
 
+            return None
 
-        def down(row: int, col: int, grid: GridArray) -> tuple[int, int] | None:
+        def bfs_down(
+            row: int,
+            col: int,
+            grid: GridArray
+        ) -> tuple[int, int] | None:
 
-            h = (len(grid) - 1) / 2
-            if row+2 < h*2 and grid[row+2][col] == 0 and grid[row+1][col] == 0:
-                return ((row+2, col))
-            else:
-                return None
+            if (
+                row + 2 < grid.shape[0] - 1
+                and grid[row + 2][col] == 0
+                and grid[row + 1][col] == 0
+            ):
+                return (row + 2, col)
 
+            return None
 
         start = grid_point(start)
         end = grid_point(end)
 
+        rows, cols = self.grid.shape
+
+        for point in (start, end):
+            if not (
+                0 < point[0] < rows - 1
+                and 0 < point[1] < cols - 1
+                and self.grid[point] == 0
+            ):
+                raise ValueError("Invalid start or end position")
+
         dq: deque[tuple[int, int]] = deque()
         dq.append(start)
 
-        parents: dict[tuple[int, int], tuple[int, int] | None] = {}
-        parents[start] = None
-        directions = [up, right, down, left]
-        viseted_cells = []
+        parents: dict[
+            tuple[int, int],
+            tuple[int, int] | None
+        ] = {start: None}
 
-        while (dq):
+        directions = [
+            bfs_up,
+            bfs_right,
+            bfs_down,
+            bfs_left
+        ]
+
+        visited = {start}
+        found = False
+
+        while dq:
             x, y = dq.popleft()
-            viseted_cells.append((x, y))
-            for dir in directions:
-                next_cell = dir(x, y, self.grid)
-                if next_cell and next_cell not in viseted_cells:
-                    parents[next_cell] = (x, y)
-                    dq.append(next_cell)
-                    viseted_cells.append(next_cell)
-                    if next_cell == end:
-                        break
+
+            if (x, y) == end:
+                found = True
+                break
+
+            for move in directions:
+                next_cell = move(x, y, self.grid)
+
+                if next_cell is None or next_cell in visited:
+                    continue
+
+                visited.add(next_cell)
+                parents[next_cell] = (x, y)
+                dq.append(next_cell)
+
                 if next_cell == end:
+                    found = True
                     break
+
+            if found:
+                break
+
+        if not found:
+            return []
+
         path = []
         current: tuple[int, int] | None = end
 
@@ -246,4 +388,5 @@ class MazeGeneartor:
             current = parents[current]
 
         path.reverse()
+
         return path
